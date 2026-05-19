@@ -13,7 +13,7 @@ Next.js voice demo for Cicada Speech, ready for Vercel deployment.
 Set this in Vercel Project Settings -> Environment Variables:
 
 ```bash
-RETELL_API_KEY=your_secret_api_key
+RETELL_API_KEY=key_16f85ad60a248d40bec03376671c
 ```
 
 ## Local development
