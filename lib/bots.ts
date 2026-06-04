@@ -24,6 +24,12 @@ export const bots: DemoBot[] = [
     description: "After-sales support for DJI customers in Europe and North America.",
     agentId: "agent_961409fa78fcde4fc852c65810",
   },
+  {
+    id: "hisense-mexico",
+    name: "Hisense Mexico",
+    description: "After-sales support for Hisense customers in Mexico.",
+    agentId: "agent_2ea19528794e6953e76ea74f23",
+  },
 ];
 
 export function getBotById(id: string) {
