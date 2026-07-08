@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hisense US TV Voice Demo</title>
+    <meta
+      name="description"
+      content="Hisense US TV voice demo with English and Chinese support assistants."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #eef7f5;
+        --bg-strong: #ffffff;
+        --surface: rgba(255, 255, 255, 0.9);
+        --text: #11181c;
+        --muted: #647179;
+        --line: rgba(17, 24, 28, 0.08);
+        --brand: #00aaa6;
+        --brand-deep: #007f7a;
+        --brand-soft: rgba(0, 170, 166, 0.1);
+        --shadow: 0 30px 80px rgba(32, 89, 92, 0.14);
+        --max-width: 980px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Outfit", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(0, 170, 166, 0.2), transparent 28%),
+          linear-gradient(180deg, #fbfffe 0%, var(--bg) 100%);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.45) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.45) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 88%);
+        pointer-events: none;
+      }
+
+      button {
+        color: inherit;
+        font: inherit;
+      }
+
+      .page-shell {
+        width: min(calc(100% - 24px), var(--max-width));
+        margin: 18px auto 40px;
+      }
+
+      .topbar,
+      .voice-panel {
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 18px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid rgba(255, 255, 255, 0.78);
+        box-shadow: 0 16px 50px rgba(31, 89, 92, 0.08);
+      }
+
+      .brand-lockup {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .brand-badge {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+        color: #fff;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        box-shadow: 0 12px 28px rgba(0, 170, 166, 0.24);
+      }
+
+      .brand-copy {
+        display: grid;
+        gap: 2px;
+      }
+
+      .brand-copy strong,
+      .hero h1,
+      .panel-header h2 {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      .brand-copy span,
+      .lang-chip,
+      .hero-text,
+      .message p,
+      .call-copy span,
+      .agent-option span {
+        color: var(--muted);
+      }
+
+      .lang-chip {
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: var(--bg-strong);
+        font-size: 0.92rem;
+      }
+
+      .main-layout {
+        display: grid;
+        gap: 22px;
+        padding-top: 42px;
+      }
+
+      .hero {
+        max-width: 760px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--brand-deep);
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(2.6rem, 6vw, 4.5rem);
+        line-height: 1;
+      }
+
+      .hero-text {
+        max-width: 54ch;
+        margin: 18px auto 0;
+        font-size: 1.04rem;
+        line-height: 1.7;
+      }
+
+      .agent-selector {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .agent-option {
+        text-align: left;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.82);
+        border-radius: 18px;
+        padding: 16px;
+        cursor: pointer;
+        transition:
+          transform 180ms ease,
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          background 180ms ease;
+      }
+
+      .agent-option:hover,
+      .agent-option:focus-visible,
+      .agent-option.is-active {
+        transform: translateY(-1px);
+        border-color: rgba(0, 170, 166, 0.34);
+        background: #fff;
+        box-shadow: 0 12px 24px rgba(31, 89, 92, 0.1);
+      }
+
+      .agent-option strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .voice-panel {
+        padding: 24px;
+        border-radius: 32px;
+        background: var(--surface);
+        border: 1px solid rgba(255, 255, 255, 0.82);
+        box-shadow: var(--shadow);
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .panel-kicker {
+        margin: 0 0 8px;
+        font-size: 0.78rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .panel-header h2 {
+        margin: 0;
+        font-size: clamp(1.5rem, 2vw, 2rem);
+      }
+
+      .status-pill {
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: var(--brand-soft);
+        color: var(--brand-deep);
+        font-size: 0.92rem;
+        white-space: nowrap;
+      }
+
+      .conversation {
+        display: grid;
+        gap: 12px;
+        min-height: 240px;
+        margin: 22px 0 18px;
+      }
+
+      .message {
+        width: min(100%, 620px);
+        padding: 15px 16px;
+        border-radius: 18px;
+        animation: message-rise 220ms ease;
+      }
+
+      .message-assistant,
+      .message-system {
+        background: var(--bg-strong);
+        border: 1px solid var(--line);
+        border-bottom-left-radius: 8px;
+      }
+
+      .message-role {
+        display: inline-block;
+        margin-bottom: 8px;
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(17, 24, 28, 0.62);
+      }
+
+      .message p {
+        margin: 0;
+        line-height: 1.62;
+      }
+
+      @keyframes message-rise {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .callbar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        width: fit-content;
+        max-width: 100%;
+        margin-top: 18px;
+        padding: 18px;
+        border-radius: 20px;
+        background: linear-gradient(180deg, rgba(0, 170, 166, 0.08), rgba(255, 255, 255, 0.6));
+        border: 1px solid rgba(0, 170, 166, 0.12);
+      }
+
+      .mic-button {
+        position: relative;
+        flex: 0 0 84px;
+        width: 84px;
+        height: 84px;
+        border: none;
+        border-radius: 24px;
+        background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+        color: #fff;
+        cursor: pointer;
+        overflow: hidden;
+        box-shadow: 0 18px 34px rgba(0, 170, 166, 0.24);
+      }
+
+      .mic-button:hover,
+      .mic-button:focus-visible {
+        transform: translateY(-1px);
+      }
+
+      .mic-button.is-listening {
+        box-shadow: 0 22px 38px rgba(0, 170, 166, 0.34);
+      }
+
+      .mic-ring,
+      .mic-core {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+      }
+
+      .mic-ring::before,
+      .mic-ring::after {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+      }
+
+      .mic-ring::after {
+        inset: 8px;
+      }
+
+      .mic-button.is-listening .mic-ring::before {
+        animation: ping 1.6s ease-out infinite;
+      }
+
+      .mic-button.is-listening .mic-ring::after {
+        animation: ping 1.6s ease-out 0.35s infinite;
+      }
+
+      @keyframes ping {
+        0% {
+          transform: scale(0.8);
+          opacity: 0.75;
+        }
+        70% {
+          transform: scale(1.06);
+          opacity: 0;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .mic-core svg {
+        width: 28px;
+        fill: currentColor;
+      }
+
+      .call-copy {
+        display: grid;
+        gap: 4px;
+      }
+
+      .transcript-panel {
+        margin-top: 18px;
+        padding: 18px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid var(--line);
+      }
+
+      .transcript-kicker {
+        margin: 0 0 8px;
+        font-size: 0.78rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .transcript-body {
+        min-height: 72px;
+        margin: 0;
+        color: var(--text);
+        line-height: 1.7;
+      }
+
+      .transcript-body.is-empty {
+        color: var(--muted);
+      }
+
+      @media (max-width: 780px) {
+        .agent-selector {
+          grid-template-columns: 1fr;
+        }
+
+        .panel-header,
+        .callbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .callbar,
+        .mic-button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-badge">H</div>
+          <div class="brand-copy">
+            <strong>Hisense US TV</strong>
+            <span>Voice Demo</span>
+          </div>
+        </div>
+        <div class="lang-chip" aria-label="Live status">Live Agent</div>
+      </header>
+
+      <main class="main-layout">
+        <section class="hero">
+          <p class="eyebrow">Live Voice Experience</p>
+          <h1>Talk to a Hisense TV assistant.</h1>
+          <p class="hero-text">
+            Choose the English or Chinese Hisense US TV assistant, then start a live support call.
+          </p>
+        </section>
+
+        <section class="agent-selector" aria-label="Assistant selection">
+          <button
+            class="agent-option is-active"
+            type="button"
+            data-agent-key="hisense_us_tv"
+            data-agent-name="Hisense US TV"
+          >
+            <strong>Hisense US TV</strong>
+            <span>English assistant for US TV support.</span>
+          </button>
+          <button
+            class="agent-option"
+            type="button"
+            data-agent-key="hisense_us_tv_chinese"
+            data-agent-name="Hisense US TV (Chinese)"
+          >
+            <strong>Hisense US TV (Chinese)</strong>
+            <span>Chinese assistant for US TV support.</span>
+          </button>
+        </section>
+
+        <section class="voice-panel" id="demo">
+          <div class="panel-header">
+            <div>
+              <p class="panel-kicker">Voice Console</p>
+              <h2 id="selected-agent-title">Hisense US TV</h2>
+            </div>
+            <div class="status-pill" id="status-pill">Ready</div>
+          </div>
+
+          <div class="conversation" id="conversation" aria-live="polite">
+            <article class="message message-assistant">
+              <span class="message-role">System</span>
+              <p>Select an assistant, then use the microphone to begin the live call.</p>
+            </article>
+          </div>
+
+          <div class="callbar">
+            <button
+              class="mic-button"
+              id="mic-button"
+              type="button"
+              aria-pressed="false"
+              aria-label="Start or stop live call"
+            >
+              <span class="mic-ring"></span>
+              <span class="mic-core">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 15.5a3.5 3.5 0 0 0 3.5-3.5V7a3.5 3.5 0 1 0-7 0v5a3.5 3.5 0 0 0 3.5 3.5Zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 5.98 5.98 0 0 0 5 5.91V20H9.5a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2H13v-2.09A5.98 5.98 0 0 0 18 12Z"
+                  />
+                </svg>
+              </span>
+            </button>
+            <div class="call-copy">
+              <strong>Start live call</strong>
+              <span id="call-copy-detail">Using Hisense US TV.</span>
+            </div>
+          </div>
+
+          <section class="transcript-panel" aria-live="polite">
+            <p class="transcript-kicker">Call Transcript</p>
+            <p class="transcript-body is-empty" id="transcript-output">
+              Transcript will appear here once the live call starts.
+            </p>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const micButton = document.getElementById("mic-button");
+      const statusPill = document.getElementById("status-pill");
+      const conversation = document.getElementById("conversation");
+      const transcriptOutput = document.getElementById("transcript-output");
+      const selectedAgentTitle = document.getElementById("selected-agent-title");
+      const callCopyDetail = document.getElementById("call-copy-detail");
+      const agentOptions = document.querySelectorAll(".agent-option");
+
+      let retellWebClient = null;
+      let retellEventsBound = false;
+      let isCallActive = false;
+      let isConnecting = false;
+      let selectedAgentKey = "hisense_us_tv";
+      let selectedAgentName = "Hisense US TV";
+      let liveTranscriptNode = null;
+
+      function setStatus(mode, textOverride) {
+        const states = {
+          ready: "Ready",
+          connecting: "Connecting",
+          listening: "Listening",
+          speaking: "Agent speaking",
+          error: "Connection issue",
+        };
+
+        statusPill.textContent = textOverride || states[mode] || states.ready;
+      }
+
+      function appendMessage(role, text) {
+        const article = document.createElement("article");
+        article.className = "message message-" + role;
+
+        const roleLabel = document.createElement("span");
+        roleLabel.className = "message-role";
+        roleLabel.textContent = role === "assistant" ? selectedAgentName : "System";
+
+        const body = document.createElement("p");
+        body.textContent = text;
+
+        article.append(roleLabel, body);
+        conversation.appendChild(article);
+        conversation.scrollTop = conversation.scrollHeight;
+        return article;
+      }
+
+      function setTranscript(text, isEmpty) {
+        transcriptOutput.textContent = text;
+        transcriptOutput.classList.toggle("is-empty", Boolean(isEmpty));
+      }
+
+      function extractTranscriptText(value) {
+        if (!value) return "";
+        if (typeof value === "string") return value.trim();
+        if (Array.isArray(value)) return value.map(extractTranscriptText).filter(Boolean).join(" ");
+        if (typeof value === "object") {
+          const candidates = [
+            value.transcript,
+            value.text,
+            value.content,
+            value.message,
+            value.delta,
+            value.words,
+            value.segments,
+            value.results,
+            value.data,
+          ];
+
+          for (const candidate of candidates) {
+            const extracted = extractTranscriptText(candidate);
+            if (extracted) return extracted;
+          }
+        }
+        return "";
+      }
+
+      function upsertLiveTranscript(text) {
+        if (!text) return;
+        setTranscript(text, false);
+
+        if (!liveTranscriptNode) {
+          liveTranscriptNode = appendMessage("assistant", text);
+          return;
+        }
+
+        const paragraph = liveTranscriptNode.querySelector("p");
+        if (paragraph) paragraph.textContent = text;
+      }
+
+      function syncMicVisual() {
+        micButton.classList.toggle("is-listening", isCallActive || isConnecting);
+        micButton.setAttribute("aria-pressed", String(isCallActive || isConnecting));
+      }
+
+      function setSelectedAgent(button) {
+        selectedAgentKey = button.dataset.agentKey || "hisense_us_tv";
+        selectedAgentName = button.dataset.agentName || "Hisense US TV";
+
+        agentOptions.forEach(function (option) {
+          option.classList.toggle("is-active", option === button);
+        });
+
+        selectedAgentTitle.textContent = selectedAgentName;
+        callCopyDetail.textContent = "Using " + selectedAgentName + ".";
+        appendMessage("system", "Selected assistant: " + selectedAgentName + ".");
+      }
+
+      function bindRetellEvents(client) {
+        if (retellEventsBound) return;
+
+        client.on("call_started", function () {
+          isConnecting = false;
+          isCallActive = true;
+          syncMicVisual();
+          setStatus("listening");
+          appendMessage("system", "Live call connected. You can speak now.");
+        });
+
+        client.on("call_ended", function () {
+          isConnecting = false;
+          isCallActive = false;
+          liveTranscriptNode = null;
+          syncMicVisual();
+          setStatus("ready");
+          appendMessage("system", "Call ended.");
+        });
+
+        client.on("agent_start_talking", function () {
+          setStatus("speaking");
+        });
+
+        client.on("agent_stop_talking", function () {
+          if (isCallActive) setStatus("listening");
+        });
+
+        client.on("update", function (update) {
+          const transcriptText = extractTranscriptText(update);
+          if (transcriptText) upsertLiveTranscript(transcriptText);
+        });
+
+        client.on("error", function (error) {
+          isConnecting = false;
+          isCallActive = false;
+          liveTranscriptNode = null;
+          syncMicVisual();
+          setStatus("error");
+          appendMessage(
+            "system",
+            error && error.message ? error.message : "The live voice service returned an error."
+          );
+
+          try {
+            client.stopCall();
+          } catch (e) {}
+        });
+
+        retellEventsBound = true;
+      }
+
+      async function getRetellClient() {
+        if (retellWebClient) return retellWebClient;
+
+        appendMessage("system", "Preparing voice engine...");
+
+        const sdkModule = await import("https://esm.sh/retell-client-js-sdk@2?bundle");
+        retellWebClient = new sdkModule.RetellWebClient();
+        bindRetellEvents(retellWebClient);
+        return retellWebClient;
+      }
+
+      async function createWebCall() {
+        const response = await fetch("/api/create-web-call", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            agentKey: selectedAgentKey,
+            source: "hisense-us-tv-demo",
+          }),
+        });
+
+        const data = await response.json().catch(function () {
+          return {};
+        });
+
+        if (!response.ok) {
+          throw new Error(data.error || "Unable to create the live voice call.");
+        }
+
+        if (!data.access_token) {
+          throw new Error("Live call token was not returned by the server.");
+        }
+
+        return data;
+      }
+
+      async function startLiveCall() {
+        if (isConnecting || isCallActive) return;
+
+        isConnecting = true;
+        syncMicVisual();
+        setStatus("connecting");
+        setTranscript("Waiting for live transcript...", true);
+        appendMessage("system", "Starting live call with " + selectedAgentName + "...");
+
+        try {
+          const client = await getRetellClient();
+          const call = await createWebCall();
+
+          await client.startCall({
+            accessToken: call.access_token,
+            sampleRate: 24000,
+            emitRawAudioSamples: false,
+          });
+        } catch (error) {
+          isConnecting = false;
+          isCallActive = false;
+          syncMicVisual();
+          setStatus("error");
+          appendMessage(
+            "system",
+            error && error.message ? error.message : "Unable to start the live call."
+          );
+        }
+      }
+
+      function stopLiveCall() {
+        if (retellWebClient) retellWebClient.stopCall();
+      }
+
+      micButton.addEventListener("click", async function () {
+        if (isCallActive || isConnecting) {
+          stopLiveCall();
+          return;
+        }
+
+        await startLiveCall();
+      });
+
+      agentOptions.forEach(function (button) {
+        button.addEventListener("click", function () {
+          setSelectedAgent(button);
+        });
+      });
+    </script>
+  </body>
+</html>
